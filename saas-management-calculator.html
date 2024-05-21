@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SaaS Savings Calculator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        .container {
+            max-width: 600px;
+            margin: auto;
+        }
+        .row {
+            margin-bottom: 10px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+        }
+        input {
+            width: 100%;
+            padding: 8px;
+            box-sizing: border-box;
+        }
+        .result {
+            background-color: #f0f0f0;
+            padding: 10px;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>SaaS Savings Calculator</h1>
+        <div class="row">
+            <label for="employees">Number of Employees (E):</label>
+            <input type="number" id="employees" value="300">
+        </div>
+        <div class="row">
+            <label for="totalApps">Total Apps (A):</label>
+            <input type="number" id="totalApps" value="0" readonly>
+        </div>
+        <div class="row">
+            <label for="turnover">Annual Employee Turnover (%) (T):</label>
+            <input type="number" id="turnover" value="8">
+        </div>
+        <div class="row">
+            <label for="saasSpending">Annual SaaS Spending ($) (C):</label>
+            <input type="number" id="saasSpending" value="0" readonly>
+        </div>
+        <button onclick="calculate()">Calculate</button>
+        <div class="result">
+            <h3>Results</h3>
+            <p>Overall Savings (S): <span id="overallSavings"></span></p>
+            <p>Redundant Services: <span id="redundantServices"></span></p>
+            <p>Unused or Abandoned Apps: <span id="unusedApps"></span></p>
+            <p>Overpriced Vendors: <span id="overpricedVendors"></span></p>
+            <p>Time Saved (Total) (Ts): <span id="timeSaved"></span></p>
+            <p>Employee Onboarding - Time Saved: <span id="onboardingTimeSaved"></span></p>
+            <p>Employee Onboarding - Amount Saved: <span id="onboardingAmountSaved"></span></p>
+            <p>Employee Offboarding - Time Saved: <span id="offboardingTimeSaved"></span></p>
+            <p>Employee Offboarding - Amount Saved: <span id="offboardingAmountSaved"></span></p>
+            <p>Vendor Renewal Management - Time Saved: <span id="vendorTimeSaved"></span></p>
+            <p>Vendor Renewal Management - Amount Saved: <span id="vendorAmountSaved"></span></p>
+            <p>Cost of Zluri: <span id="costOfZluri"></span></p>
+            <p>ROI: <span id="roi"></span></p>
+            <p>ROI across Y years: <span id="roiYears"></span></p>
+            <p>SaaS Applications: <span id="saasApps"></span></p>
+            <p>Shadow Apps: <span id="shadowApps"></span></p>
+            <p>Ex-employees with Access: <span id="exEmployees"></span></p>
+        </div>
+    </div>
+
+    <script>
+        function calculate() {
+            const employees = parseInt(document.getElementById('employees').value);
+            const turnover = parseFloat(document.getElementById('turnover').value) / 100;
+            const itProSalary = 125776;
+
+            const totalApps = calculateTotalApps(employees);
+            document.getElementById('totalApps').value = totalApps;
+
+            const annualSaaS = 2623 * employees + 0.38 * itProSalary;
+            document.getElementById('saasSpending').value = annualSaaS.toFixed(2);
+
+            const overallSavings = 0.56 * annualSaaS;
+            const redundantServices = 0.2 * annualSaaS;
+            const unusedApps = 0.12 * annualSaaS;
+            const overpricedVendors = 0.1 * annualSaaS;
+
+            const timeSaved = annualSaaS / 71;
+            const onboardingTimeSaved = 0.0266 * timeSaved;
+            const onboardingAmountSaved = 0.0266 * annualSaaS;
+            const offboardingTimeSaved = 0.0834 * timeSaved;
+            const offboardingAmountSaved = 0.0834 * annualSaaS;
+            const vendorTimeSaved = 0.03 * timeSaved;
+            const vendorAmountSaved = 0.03 * annualSaaS;
+
+            const costOfZluri = 84 * employees;
+            const roi = ((annualSaaS - costOfZluri) / annualSaaS) * 100;
+            const roiYears = roi * 0.75;
+
+            const saasApps = (2 / 3) * totalApps;
+            const shadowApps = (1 / 3) * totalApps;
+            const exEmployees = turnover * employees;
+
+            document.getElementById('overallSavings').textContent = overallSavings.toFixed(2);
+            document.getElementById('redundantServices').textContent = redundantServices.toFixed(2);
+            document.getElementById('unusedApps').textContent = unusedApps.toFixed(2);
+            document.getElementById('overpricedVendors').textContent = overpricedVendors.toFixed(2);
+            document.getElementById('timeSaved').textContent = timeSaved.toFixed(2);
+            document.getElementById('onboardingTimeSaved').textContent = onboardingTimeSaved.toFixed(2);
+            document.getElementById('onboardingAmountSaved').textContent = onboardingAmountSaved.toFixed(2);
+            document.getElementById('offboardingTimeSaved').textContent = offboardingTimeSaved.toFixed(2);
+            document.getElementById('offboardingAmountSaved').textContent = offboardingAmountSaved.toFixed(2);
+            document.getElementById('vendorTimeSaved').textContent = vendorTimeSaved.toFixed(2);
+            document.getElementById('vendorAmountSaved').textContent = vendorAmountSaved.toFixed(2);
+            document.getElementById('costOfZluri').textContent = costOfZluri.toFixed(2);
+            document.getElementById('roi').textContent = roi.toFixed(2);
+            document.getElementById('roiYears').textContent = roiYears.toFixed(2);
+            document.getElementById('saasApps').textContent = Math.round(saasApps);
+            document.getElementById('shadowApps').textContent = Math.round(shadowApps);
+            document.getElementById('exEmployees').textContent = exEmployees.toFixed(2);
+        }
+
+        function calculateTotalApps(employees) {
+            let totalApps = 0;
+            if (employees <= 50) {
+                totalApps = 2.74 * employees;
+            } else if (employees <= 300) {
+                totalApps = 1.45 * employees + 65;
+            } else if (employees <= 750) {
+                totalApps = 1.56 * employees + 30;
+            } else if (employees <= 1750) {
+                totalApps = 0.2 * employees + 1050;
+            } else if (employees <= 3750) {
+                totalApps = 0.125 * employees + 1181.25;
+            } else if (employees <= 15000) {
+                totalApps = 0.165 * employees + 1031.25;
+            }
+            return Math.round(totalApps);
+        }
+
+        document.querySelectorAll('input').forEach(input => {
+            input.addEventListener('input', calculate);
+        });
+
+        window.onload = calculate;
+    </script>
+</body>
+</html>
