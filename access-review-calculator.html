@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Access Review ROI Calculator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        .container {
+            max-width: 600px;
+            margin: auto;
+        }
+        .row {
+            margin-bottom: 10px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+        }
+        input {
+            width: 100%;
+            padding: 8px;
+            box-sizing: border-box;
+        }
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        .result {
+            background-color: #f0f0f0;
+            padding: 10px;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Access Review ROI Calculator</h1>
+        <div class="row">
+            <label for="numEmployees">Number of Employees:</label>
+            <input type="number" id="numEmployees" value="1400" required>
+        </div>
+        <div class="row">
+            <label for="reviewsPerYear">How frequently will you conduct access reviews per year?</label>
+            <input type="number" id="reviewsPerYear" value="4" required>
+        </div>
+        <div class="row">
+            <label for="reviewDays">Time spent in conducting access reviews in days:</label>
+            <input type="number" id="reviewDays" value="6" required>
+        </div>
+        <button onclick="calculateROI()">Calculate</button>
+        <div class="result" id="results">
+            <h3>Results</h3>
+            <p>No of Employees who conduct access reviews: <span id="noOfEmployeesConductingReviews"></span></p>
+            <p>Total man-hours per access review: <span id="totalManHoursPerReview"></span></p>
+            <p>Time spent by the manager: <span id="timeSpentByManager"></span></p>
+            <p>Time spent by Analyst: <span id="timeSpentByAnalyst"></span></p>
+            <p>Zluri Yearly Cost in Dollars: <span id="zluriYearlyCost"></span></p>
+            <p>Security Engineer Yearly cost: <span id="securityEngineerYearlyCost"></span></p>
+            <p>Head of IT Yearly Cost: <span id="headOfITYearlyCost"></span></p>
+            <p>Total Yearly Cost: <span id="totalYearlyCost"></span></p>
+            <p>Total Yearly cost to the company with Missed Zluri benefit value: <span id="totalYearlyCostWithBenefits"></span></p>
+            <p>Total Cost Savings Per Year in Dollars: <span id="totalCostSavingsPerYear"></span></p>
+            <p>ROI: <span id="roi"></span></p>
+        </div>
+    </div>
+
+    <script>
+        function calculateROI() {
+            // Input values
+            const numEmployees = parseInt(document.getElementById("numEmployees").value);
+            const reviewsPerYear = parseInt(document.getElementById("reviewsPerYear").value);
+            const reviewDays = parseInt(document.getElementById("reviewDays").value);
+
+            // Constants
+            const headOfITWagePerHour = 200;
+            const securityEngineerWagePerHour = 75;
+            const workingHoursPerDay = 8;
+            const additionalBenefitsFromZluri = 10000;
+
+            // Calculations
+            const noOfEmployeesConductingReviews = (numEmployees * 0.011).toFixed(1);
+            const totalManHoursPerReview = (reviewDays * workingHoursPerDay * noOfEmployeesConductingReviews).toFixed(1);
+            const timeSpentByManager = (totalManHoursPerReview * 0.2).toFixed(2);
+            const timeSpentByAnalyst = (totalManHoursPerReview - timeSpentByManager).toFixed(2);
+            const zluriYearlyCost = Math.round(numEmployees * 4 * 12);
+
+            const securityEngineerYearlyCost = Math.round(securityEngineerWagePerHour * reviewsPerYear * timeSpentByAnalyst);
+            const headOfITYearlyCost = Math.round(headOfITWagePerHour * timeSpentByManager * reviewsPerYear);
+            const totalYearlyCost = securityEngineerYearlyCost + headOfITYearlyCost;
+
+            const totalYearlyCostWithBenefits = Math.round(additionalBenefitsFromZluri + totalYearlyCost);
+            const totalCostSavingsPerYear = (totalYearlyCostWithBenefits - zluriYearlyCost);
+            const roi = (totalYearlyCostWithBenefits / zluriYearlyCost).toFixed(2);
+
+            // Display results
+            document.getElementById("noOfEmployeesConductingReviews").textContent = noOfEmployeesConductingReviews;
+            document.getElementById("totalManHoursPerReview").textContent = totalManHoursPerReview;
+            document.getElementById("timeSpentByManager").textContent = timeSpentByManager;
+            document.getElementById("timeSpentByAnalyst").textContent = timeSpentByAnalyst;
+            document.getElementById("zluriYearlyCost").textContent = `$${zluriYearlyCost}`;
+            document.getElementById("securityEngineerYearlyCost").textContent = `$${securityEngineerYearlyCost}`;
+            document.getElementById("headOfITYearlyCost").textContent = `$${headOfITYearlyCost}`;
+            document.getElementById("totalYearlyCost").textContent = `$${totalYearlyCost}`;
+            document.getElementById("totalYearlyCostWithBenefits").textContent = `$${totalYearlyCostWithBenefits}`;
+            document.getElementById("totalCostSavingsPerYear").textContent = `$${totalCostSavingsPerYear}`;
+            document.getElementById("roi").textContent = roi;
+        }
+
+        // Calculate ROI on page load
+        window.onload = calculateROI;
+    </script>
+</body>
+</html>
